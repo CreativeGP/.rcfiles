@@ -471,9 +471,20 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 		    (replace-string old-word new-word)
 		    ))
   )
-(define-key global-map "\el" 'gp-replace-in-region)
 
-(define-key global-map "\eo" 'query-replace)
+(defun gp-replace-regexp-in-region (old-word new-word)
+  "Perform a replace-regexp in the current region."
+  (interactive "sReplace regexp: \nsReplace: %s  With: ")
+  (save-excursion (save-restriction
+		    (narrow-to-region (mark) (point))
+		    (beginning-of-buffer)
+		    (replace-regexp old-word new-word)
+		    ))
+  )
+
+(define-key global-map "\el" 'gp-replace-in-region)
+(define-key global-map "\eo" 'gp-replace-regexp-in-region)
+
 (define-key global-map "\eO" 'gp-replace-string)
 
 ; \377 is alt-backspace
@@ -763,9 +774,8 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
-
-
-
+; Fix replacing
+; (require 'replace-from-region)
 
 
 
