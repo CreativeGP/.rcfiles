@@ -3,7 +3,7 @@
 ; even less about ELISP.  So take everything in
 ; this file with a grain of salt!
 ;
-; - CreativeGP
+; - Creative GP
 ; Stop Emacs from losing undo information by
 ; setting very high limits for undo buffers
 
@@ -252,8 +252,8 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      (insert "   $File: $\n")
      (insert "   $Date: $\n")
      (insert "   $Revision: $\n")
-     (insert "   $Creator: CreativeGP $\n")
-     (insert "   $Notice: (C) Copyright 2018 by CreativeGP. All Rights Reserved. $\n")
+     (insert "   $Creator: Creative GP $\n")
+     (insert "   $Notice: (C) Copyright 2018 by Creative GP. All Rights Reserved. $\n")
      (insert "   ======================================================================== */\n")
      (insert "\n")
      (insert "#define ")
@@ -273,8 +273,8 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      (insert "   $File: $\n")
      (insert "   $Date: $\n")
      (insert "   $Revision: $\n")
-     (insert "   $Creator: CreativeGP $\n")
-     (insert "   $Notice: (C) Copyright 2018 by CreativeGP. All Rights Reserved. $\n")
+     (insert "   $Creator: Creative GP $\n")
+     (insert "   $Notice: (C) Copyright 2018 by Creative GP. All Rights Reserved. $\n")
      (insert "   ======================================================================== */\n")
   )
 
@@ -589,7 +589,13 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
  '(mouse-wheel-follow-mouse nil)
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount (quote (15)))
- '(package-selected-packages (quote (dash rainbow-mode php-mode php+-mode icicles helm)))
+ '(package-archives
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa-stable" . "http://stable.melpa.org/packages/"))))
+ '(package-selected-packages
+   (quote
+    (haskell-mode dash rainbow-mode php-mode php+-mode icicles helm)))
  '(send-mail-function nil)
  '(version-control nil))
 
@@ -777,7 +783,10 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ; Fix replacing
 ; (require 'replace-from-region)
 
+; Haskell mode
+(require 'package)
 
+(package-initialize)
 
 
 
