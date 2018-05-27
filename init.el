@@ -680,6 +680,7 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (global-set-key (kbd "M-h") 'backword-kill-word)
 (global-set-key (kbd "M-w") 'kill-ring-save)
 
+(global-set-key (kbd "C-c r") 'eval-region)
 
 ;; Magit
 
@@ -693,11 +694,6 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
-
-
-
-
-
 ;; Custom Commands
 ;;  ██████╗██╗   ██╗███████╗████████╗ ██████╗ ███╗   ███╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗ ███████╗
 ;; ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔═══██╗████╗ ████║    ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝
@@ -705,6 +701,14 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ;; ██║     ██║   ██║╚════██║   ██║   ██║   ██║██║╚██╔╝██║    ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║╚════██║
 ;; ╚██████╗╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚═╝ ██║    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝███████║
 ;;  ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
+
+(defun flatten-region ()
+  (interactive)
+  (let ((string-in-region (buffer-substring-no-properties (mark) (point))))
+    (progn
+      (delete-region (mark) (point))
+      (insert (replace-regexp-in-string "\n" "" string-in-region)))))
+
 
 (require 'compile)
 (setq compilation-error-regexp-alist
