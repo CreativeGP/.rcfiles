@@ -595,7 +595,7 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      ("melpa-stable" . "http://stable.melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (haskell-mode dash rainbow-mode php-mode php+-mode icicles helm)))
+    (magit csharp-mode haskell-mode dash rainbow-mode php-mode php+-mode icicles helm)))
  '(send-mail-function nil)
  '(version-control nil))
 
@@ -678,6 +678,33 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (global-set-key (kbd "C-t") 'kill-word)
 (global-set-key "\C-h" 'delete-backword-char)
 (global-set-key (kbd "M-h") 'backword-kill-word)
+(global-set-key (kbd "M-w") 'kill-ring-save)
+
+
+;; Magit
+
+;; ███╗   ███╗ █████╗  ██████╗ ██╗████████╗
+;; ████╗ ████║██╔══██╗██╔════╝ ██║╚══██╔══╝
+;; ██╔████╔██║███████║██║  ███╗██║   ██║   
+;; ██║╚██╔╝██║██╔══██║██║   ██║██║   ██║   
+;; ██║ ╚═╝ ██║██║  ██║╚██████╔╝██║   ██║   
+;; ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝   ╚═╝   
+
+(global-set-key (kbd "C-x g") 'magit-status)
+
+
+
+
+
+
+
+;; Custom Commands
+;;  ██████╗██╗   ██╗███████╗████████╗ ██████╗ ███╗   ███╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗ ███████╗
+;; ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔═══██╗████╗ ████║    ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝
+;; ██║     ██║   ██║███████╗   ██║   ██║   ██║██╔████╔██║    ██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████╗
+;; ██║     ██║   ██║╚════██║   ██║   ██║   ██║██║╚██╔╝██║    ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║╚════██║
+;; ╚██████╗╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚═╝ ██║    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝███████║
+;;  ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
 
 (require 'compile)
 (setq compilation-error-regexp-alist
@@ -732,6 +759,10 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
+(add-hook 'web-mode-hook
+	  '(lambda ()
+	     (setq tab-width 2)))
+
 ;; (setq web-mode-engines-alist
 ;;       '(("php"    . "\\.phtml\\'"))
 ;; )
@@ -783,8 +814,40 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ; Fix replacing
 ; (require 'replace-from-region)
 
+(require 'visual-basic-mode)
+(add-to-list 'auto-mode-alist '("\\.vb\\'" . visual-basic-mode))
+
+; Path
+(dolist (dir (list
+	      "/sbin"
+	      "/usr/sbin"
+	      "/bin"
+	      "/usr/bin"
+	      "/opt/local/bin"
+	      "/sw/bin"
+	      "/usr/local/bin"
+	      (expand-file-name "~/bin")
+	      (expand-file-name "~/.emacs.d/bin")
+	      ))
+  ;; Set same stuff in PATH and exec-path
+  (when (and (file-exists-p dir) (not (member dir exec-path)))
+    (setenv "PATH" (concat dir ":" (getenv "PATH")))
+    (setq exec-path (append (list dir) exec-path))))
+
+;; Shells
+(defun cgp:shell ()
+  (or (executable-find "zsh")
+      (executable-find "bash")
+      (executable-find "cmdproxy")
+      (error "can't find 'shell' command in PATH!!")))
+
+(setq shell-file-name (cgp:shell))
+(setenv "SHELL" shell-file-name)
+(setq explicit-shell-file-name shell-file-name)
+
 ; Haskell mode
 (require 'package)
+
 
 (package-initialize)
 
