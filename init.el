@@ -8,6 +8,10 @@
 ; setting very high limits for undo buffers
 
 (package-initialize)
+(add-to-list 'load-path "~/share/elisp")
+
+;(require 'cask "~/.cask/cask.el")
+;(cask-initialize)
 
 (setq undo-limit 20000000)
 (setq undo-strong-limit 40000000)
@@ -16,17 +20,6 @@
 (setq gp-aquamacs (featurep 'aquamacs))
 (setq gp-linux (featurep 'x))
 (setq gp-win32 (not (or gp-aquamacs gp-linux)))
-
-; (global-hl-line-mode 1)
-(require 'hl-line)
-(defun global-hl-line-timer-function ()
-  (global-hl-line-unhighlight-all)
-  (let ((global-hl-line-mode t))
-    (global-hl-line-highlight)))
-(setq global-hl-line-timer
-      (run-with-idle-timer 0.03 t 'global-hl-line-timer-function))
-;; (cancel-timer global-hl-line-timer)
-(set-face-background 'hl-line "midnight blue")
 
 (setq compilation-directory-locked nil)
 (scroll-bar-mode -1)
@@ -71,14 +64,15 @@
 (ido-mode t)
 
 ; Setup my find-files
- (define-key global-map "\ef" 'find-file)
+(define-key global-map "\ef" 'find-file)
+; (define-key global-map (kbd "C-c") 'kill-ring-save)
 (define-key global-map "\eF" 'find-file-other-window)
 
 (global-set-key (read-kbd-macro "\eb")  'ido-switch-buffer)
 (global-set-key (read-kbd-macro "\eB")  'ido-switch-buffer-other-window)
 
 (defun gp-ediff-setup-windows (buffer-A buffer-B buffer-C control-buffer)
-n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
+  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 )
 (setq ediff-window-setup-function 'gp-ediff-setup-windows)
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -163,6 +157,9 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
          ("\\.ms$" . fundamental-mode)
          ("\\.m$" . objc-mode)
          ("\\.mm$" . objc-mode)
+         ("\\.co$" . condo-mode)
+         ("\\.con$" . condo-mode)
+         ("\\.condo$" . condo-mode)
          ) auto-mode-alist))
 
 ; C++ indentation style
@@ -249,11 +246,15 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      (pop-mark)
      (insert "_H)\n")
      (insert "/* ========================================================================\n")
-     (insert "   $File: $\n")
-     (insert "   $Date: $\n")
+     (insert "   $File: ")
+     (insert (buffer-name))
+     (insert " $\n")
+     (insert "   $Date: ")
+     (insert (format-time-string "%b %m %Y"))
+     (insert " $\n")
      (insert "   $Revision: $\n")
      (insert "   $Creator: Creative GP $\n")
-     (insert "   $Notice: (C) Copyright 2018 by Creative GP. All Rights Reserved. $\n")
+     (insert "   $Notice: (C) Copyright 2019 by Creative GP. All Rights Reserved. $\n")
      (insert "   ======================================================================== */\n")
      (insert "\n")
      (insert "#define ")
@@ -270,11 +271,15 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      (interactive)
      (setq BaseFileName (file-name-sans-extension (file-name-nondirectory buffer-file-name)))
      (insert "/* ========================================================================\n")
-     (insert "   $File: $\n")
-     (insert "   $Date: $\n")
+     (insert "   $File: ")
+     (insert (buffer-name))
+     (insert " $\n")
+     (insert "   $Date: ")
+     (insert (format-time-string "%b %m %Y"))
+     (insert " $\n")
      (insert "   $Revision: $\n")
      (insert "   $Creator: Creative GP $\n")
-     (insert "   $Notice: (C) Copyright 2018 by Creative GP. All Rights Reserved. $\n")
+     (insert "   $Notice: (C) Copyright 2019 by Creative GP. All Rights Reserved. $\n")
      (insert "   ======================================================================== */\n")
   )
 
@@ -350,6 +355,7 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (define-key global-map [f8] 'gp-replace-string)
 
 (add-hook 'c-mode-common-hook 'gp-big-fun-c-hook)
+(add-hook 'c-mode-hook 'gp-big-fun-c-hook)
 
 (defun gp-save-buffer ()
   "Save the buffer after untabifying it."
@@ -578,6 +584,9 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
      (java-mode . "java")
      (awk-mode . "awk")
      (other . "gnu"))))
+ '(custom-safe-themes
+   (quote
+    ("565aa482e486e2bdb9c3cf5bfb14d1a07c4a42cfc0dc9d6a14069e53b6435b56" default)))
  '(delete-auto-save-files nil)
  '(delete-old-versions (quote other))
  '(imenu-auto-rescan t)
@@ -592,12 +601,15 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa" . "http://melpa.org/packages/")
      ("melpa-stable" . "http://stable.melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (magit csharp-mode haskell-mode dash rainbow-mode php-mode php+-mode icicles helm)))
+    (ponylang-mode lean-mode scala-mode ess package-utils madhat2r-theme nim-mode julia-shell julia-repl julia-mode flycheck-color-mode-line ## go-mode js2-mode magit csharp-mode haskell-mode dash rainbow-mode php-mode php+-mode icicles helm)))
  '(send-mail-function nil)
  '(version-control nil))
+
+(setq-default indent-tabs-mode nil)
 
 (define-key global-map "\t" 'dabbrev-expand)
 (define-key global-map [S-tab] 'indent-for-tab-command)
@@ -606,10 +618,22 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (define-key global-map [C-tab] 'indent-region)
 (define-key global-map "	" 'indent-region)
 
-(defun gp-never-split-a-window
-    "Never, ever split a window.  Why would anyone EVER want you to do that??"
-    nil)
-(setq split-window-preferred-function 'gp-never-split-a-window)
+;; (defun gp-never-split-a-window
+;;     "Never, ever split a window.  Why would anyone EVER want you to do that??"
+;;     nil)
+;; (setq split-window-preferred-function 'gp-never-split-a-window)
+
+
+
+;; Looks
+
+;; ██╗      ██████╗  ██████╗ ██╗  ██╗███████╗
+;; ██║     ██╔═══██╗██╔═══██╗██║ ██╔╝██╔════╝
+;; ██║     ██║   ██║██║   ██║█████╔╝ ███████╗
+;; ██║     ██║   ██║██║   ██║██╔═██╗ ╚════██║
+;; ███████╗╚██████╔╝╚██████╔╝██║  ██╗███████║
+;; ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝
+                                          
 
 ; (add-to-list 'default-frame-alist '(font . "\202l\202r \203S\203V\203b\203N-17"))
 ; (set-face-attribute 'default t :font "\202l\202r \203S\203V\203b\203N-17")
@@ -631,7 +655,10 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ;; (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "MigMix 1M"))
 ;; (setq face-font-rescale-alist '(("MigMix 1M" . 0.95)))
 
-(add-to-list 'default-frame-alist '(font . "Liberation Mono-13"))
+
+;(load-theme 'klere t)
+
+(add-to-list 'default-frame-alist '(font . "Liberation Mono-13")) ;Nu Nimono
 (set-face-attribute 'default t :font "Liberation Mono-13")
 
 (set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
@@ -644,6 +671,17 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (set-face-attribute 'font-lock-type-face nil :foreground "burlywood3")
 (set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
 
+; (global-hl-line-mode 1)
+(require 'hl-line)
+(defun global-hl-line-timer-function ()
+  (global-hl-line-unhighlight-all)
+  (let ((global-hl-line-mode t))
+    (global-hl-line-highlight)))
+(setq global-hl-line-timer
+      (run-with-idle-timer 0.03 t 'global-hl-line-timer-function))
+(cancel-timer global-hl-line-timer)
+(set-face-background 'hl-line "midnight blue")
+
 (defun post-load-stuff ()
   (interactive)
   (menu-bar-mode -1)
@@ -654,13 +692,32 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 )
 (add-hook 'window-setup-hook 'post-load-stuff t)
 
+
+(defun nim-hook ()
+  (if (not (file-exists-p buffer-file-name))
+      (progn
+        (insert "###\n")
+        (insert "### NimYauilib - Yet another UI library for Nim using SDL2\n")
+        (insert "### \n")
+        (insert "### ")
+        (insert (format-time-string "%b %m %Y"))
+        (insert "\n")
+        (insert "### Author: CreativeGP<cretgp.com> \n")
+        (insert "### \n")
+        )))
+
+(add-hook 'nim-mode-hook 'nim-hook)
+
+(add-hook
+  'ponylang-mode-hook
+  (lambda ()
+    (set-variable 'indent-tabs-mode nil)
+    (set-variable 'tab-width 2)))
+
 ; 列数を表示
 (column-number-mode t)
 
 (show-paren-mode t)        ;;カッコを強調表示する
-
-; C-kで行全体を削除
-(setq kill-whole-line t)
 
 ; (yes-no)を(y-n)に
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -672,15 +729,6 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
  ;; If there is more than one, they won't work right.
  )
 
-(global-set-key (kbd "C-c ;") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-o") 'compile)
-(global-set-key (kbd "C-r") 'mark-word)
-(global-set-key (kbd "C-t") 'kill-word)
-(global-set-key "\C-h" 'delete-backword-char)
-(global-set-key (kbd "M-h") 'backword-kill-word)
-(global-set-key (kbd "M-w") 'kill-ring-save)
-
-(global-set-key (kbd "C-c r") 'eval-region)
 
 ;; Magit
 
@@ -694,7 +742,9 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
+
 ;; Custom Commands
+
 ;;  ██████╗██╗   ██╗███████╗████████╗ ██████╗ ███╗   ███╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗ ███████╗
 ;; ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔═══██╗████╗ ████║    ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝
 ;; ██║     ██║   ██║███████╗   ██║   ██║   ██║██╔████╔██║    ██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████╗
@@ -702,13 +752,29 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ;; ╚██████╗╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚═╝ ██║    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝███████║
 ;;  ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
 
+
+; C-kで行全体を削除
+(setq kill-whole-line t)
+
+(global-set-key (kbd "C-/") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-o") 'compile)
+(global-set-key (kbd "C-r") 'mark-word)
+(global-set-key (kbd "C-t") 'kill-word)
+(global-set-key "\C-h" 'delete-backword-char)
+(global-set-key (kbd "M-h") 'backword-kill-word)
+(global-set-key (kbd "M-w") 'kill-ring-save)
+
+(global-unset-key (kbd "C-x C-c"))
+
+(global-set-key (kbd "C-c r") 'eval-region)
+
+
 (defun flatten-region ()
   (interactive)
   (let ((string-in-region (buffer-substring-no-properties (mark) (point))))
     (progn
       (delete-region (mark) (point))
       (insert (replace-regexp-in-string "\n" "" string-in-region)))))
-
 
 (require 'compile)
 (setq compilation-error-regexp-alist
@@ -743,18 +809,16 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (define-key mode-specific-map "c" 'compile)
 (put 'upcase-region 'disabled nil)
 
-; My load-path
-(add-to-list 'load-path "~/share/elisp")
-
 ; mozc
-(require 'mozc)
-(set-language-environment "Japanese")
-(setq default-input-method "japanese-mozc")
-(global-set-key "\e`" 'toggle-input-method)
+;; (require 'mozc)
+;; (set-language-environment "Japanese")
+;; (setq default-input-method "japanese-mozc")
+;; (global-set-key "\e`" 'toggle-input-method)
 
 ; web-mode
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
@@ -762,11 +826,10 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-(add-hook 'web-mode-hook
-	  '(lambda ()
-	     (setq tab-width 2)))
-
+(defun web-mode-hook ()
+	"Hooks for Web mode."
+	(setq web-mode-markup-indent-offset 4))
+(add-hook 'web-mode-hook 'web-mode-hook)
 ;; (setq web-mode-engines-alist
 ;;       '(("php"    . "\\.phtml\\'"))
 ;; )
@@ -794,23 +857,23 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
    "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
 (autoload 'gfm-mode "markdown-mode"
    "Major mode for editing GitHub Flavored Markdown files" t)
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
 
 ;; rust-mode
 (autoload 'rust-mode "rust-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 
-;; Disable tartup window
 
+;; Disable tartup window
 (setq show-parlen-style 'mixed)
+
 
 ;; Lua mode
 ;; This line is not necessary, if lua-mode.el is already on your load-path
 (add-to-list 'load-path "/path/to/directory/where/lua-mode-el/resides")
-
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
@@ -818,8 +881,8 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ; Fix replacing
 ; (require 'replace-from-region)
 
-(require 'visual-basic-mode)
-(add-to-list 'auto-mode-alist '("\\.vb\\'" . visual-basic-mode))
+;; (require 'visual-basic-mode)
+;; (add-to-list 'auto-mode-alist '("\\.vb\\'" . visual-basic-mode))
 
 ; Path
 (dolist (dir (list
@@ -852,6 +915,16 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 ; Haskell mode
 (require 'package)
 
+; JS2 mode
+(require 'flycheck)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-jsx-mode))
+(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+(add-hook 'js2-jsx-mode-hook 'flycheck-mode)
+
+; (require 'julia-mode)
+(require 'ess-site)
+
+(require 'condo-mode)
 
 (package-initialize)
 
@@ -885,3 +958,6 @@ n  (ediff-setup-windows-plain buffer-A buffer-B buffer-C control-buffer)
 (set-file-name-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 
+(put 'downcase-region 'disabled nil)
+
+(define-key global-map "\ew" 'other-window)
